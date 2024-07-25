@@ -224,6 +224,15 @@ def extract_name_from_resume(text):
         name = match.group()
     return name
 
+# Extract text from PDF
+def extract_text_from_pdf(file):
+    return extract_text(file)
+
+# Streamlit app
+
+
+
+
 # Streamlit app
 st.title("Resume Analysis App")
 
@@ -231,16 +240,20 @@ uploaded_file = st.file_uploader("Upload a resume (PDF or TXT)", type=["pdf", "t
 
 if uploaded_file is not None:
     if uploaded_file.name.endswith('.pdf'):
-        text = pdf_to_text(uploaded_file)
+        text = extract_text_from_pdf(uploaded_file)
     elif uploaded_file.name.endswith('.txt'):
         text = uploaded_file.read().decode('utf-8')
     else:
         st.error("Invalid file format. Please upload a PDF or TXT file.")
-
+    
+    text = clean_text(text)
+    text_vectorized = tfidf_vectorizer_categorization.transform([text])
+    
+    predicted_category = xgb_classifier_categorization.predict(text_vectorized)[0]
+    
     st.subheader("Predicted Category")
-    predicted_category = predict_category(text)
     st.write(predicted_category)
-
+    
     st.subheader("Recommended Job")
     recommended_job = job_recommendation(text)
     st.write(recommended_job)
