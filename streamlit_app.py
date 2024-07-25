@@ -1,8 +1,10 @@
 import streamlit as st
-from PyPDF2 import PdfReader
-import re
-import pickle
 import os
+import pickle
+import re
+import zipfile
+from pdfminer.high_level import extract_text
+import xgboost
 
 # Function to unzip a file
 def unzip_file(zip_path, extract_to):
@@ -27,7 +29,7 @@ def load_model(file_path):
         return None
 
 # Unzip the models
-zip_file_path = 'models.zip'
+zip_file_path = 'models.zip'  # Ensure this file is in the root of your repository
 unzip_dir = 'models'
 if not os.path.exists(unzip_dir):
     unzip_file(zip_file_path, unzip_dir)
@@ -56,6 +58,7 @@ if xgb_classifier_categorization is None or tfidf_vectorizer_categorization is N
    rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
     st.error("One or more models could not be loaded. Please check the file paths and try again.")
     st.stop()
+
 
 # Clean resume function
 def cleanResume(txt):
