@@ -4,11 +4,58 @@ import re
 import pickle
 
 
-# Load models
-xgb_classifier_categorization = pickle.load(open('models/xgb_classifier_categorization.pkl', 'rb'))
-tfidf_vectorizer_categorization = pickle.load(open('models/tfidf_vectorizer_categorization.pkl', 'rb'))
-rf_classifier_job_recommendation = pickle.load(open('models/rf_classifier_job_recommendation.pkl', 'rb'))
-tfidf_vectorizer_job_recommendation = pickle.load(open('models/tfidf_vectorizer_job_recommendation1.pkl', 'rb'))
+# Function to unzip a file
+def unzip_file(zip_path, extract_to):
+    st.write(f"Unzipping {zip_path}")
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(extract_to)
+    st.write(f"Unzipped to {extract_to}")
+
+# Function to load a model from a file
+def load_model(file_path):
+    st.write(f"Loading model from {file_path}")
+    if not os.path.exists(file_path):
+        st.error(f"File {file_path} does not exist.")
+        return None
+    try:
+        with open(file_path, 'rb') as file:
+            model = pickle.load(file)
+            st.write(f"Successfully loaded {file_path}")
+            return model
+    except Exception as e:
+        st.error(f"Error loading {file_path}: {e}")
+        return None
+
+# Unzip the models
+zip_file_path = 'models.zip'
+unzip_dir = 'models'
+if not os.path.exists(unzip_dir):
+    unzip_file(zip_file_path, unzip_dir)
+
+# Load all models
+model_files = {
+    'xgb_classifier_categorization': 'xgb_classifier_categorization.pkl',
+    'tfidf_vectorizer_categorization': 'tfidf_vectorizer_categorization.pkl',
+    'rf_classifier_job_recommendation': 'rf_classifier_job_recommendation.pkl',
+    'tfidf_vectorizer_job_recommendation': 'tfidf_vectorizer_job_recommendation.pkl'
+}
+
+models = {}
+for model_name, file_name in model_files.items():
+    file_path = os.path.join(unzip_dir, file_name)
+    models[model_name] = load_model(file_path)
+    if models[model_name] is None:
+        st.stop()
+
+xgb_classifier_categorization = models['xgb_classifier_categorization']
+tfidf_vectorizer_categorization = models['tfidf_vectorizer_categorization']
+rf_classifier_job_recommendation = models['rf_classifier_job_recommendation']
+tfidf_vectorizer_job_recommendation = models['tfidf_vectorizer_job_recommendation']
+
+if xgb_classifier_categorization is None or tfidf_vectorizer_categorization is None or \
+   rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
+    st.error("One or more models could not be loaded. Please check the file paths and try again.")
+    st.stop()
 
 # Clean resume function
 def cleanResume(txt):
