@@ -1,0 +1,8 @@
+streamlit
+pdfminer.six
+scikit-learn
+pandas
+numpy
+regex
+pickle
+PyPDF2
