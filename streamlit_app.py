@@ -3,19 +3,11 @@ from PyPDF2 import PdfReader
 import re
 import pickle
 
-model_files = {
-    'rf_classifier_categorization.pkl',
-    'tfidf_vectorizer_categorization.pkl',
-    'rf_classifier_job_recommendation.pkl',
-    'tfidf_vectorizer_job_recommendation.pkl'
-}
-
-# Function to load a model from a file
 def load_model(file_name):
     with open(file_name, 'rb') as file:
         return pickle.load(file)
-        
 
+# Load all models
 rf_classifier_categorization = load_model('rf_classifier_categorization.pkl')
 tfidf_vectorizer_categorization = load_model('tfidf_vectorizer_categorization.pkl')
 rf_classifier_job_recommendation = load_model('rf_classifier_job_recommendation.pkl')
