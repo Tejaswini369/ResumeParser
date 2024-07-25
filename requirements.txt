@@ -1,7 +1,9 @@
 streamlit
 pdfminer.six
+requests
 scikit-learn
 pandas
 numpy
 regex
-PyPDF2
+pickle
+xgboost
