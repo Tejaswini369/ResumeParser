@@ -5,11 +5,18 @@ import pickle
 import os
 # Function to load a model from a file
 def load_model(file_name):
+    st.write(f"Loading model from {file_name}")
     if not os.path.exists(file_name):
         st.error(f"File {file_name} does not exist.")
         return None
-    with open(file_name, 'rb') as file:
-        return pickle.load(file)
+    try:
+        with open(file_name, 'rb') as file:
+            model = pickle.load(file)
+            st.write(f"Successfully loaded {file_name}")
+            return model
+    except Exception as e:
+        st.error(f"Error loading {file_name}: {e}")
+        return None
 
 # Verify file existence and load all models
 model_files = {
@@ -20,15 +27,16 @@ model_files = {
 }
 
 # Load all models
+models = {}
 for model_name, file_name in model_files.items():
-    if not os.path.exists(file_name):
-        st.error(f"Model file {file_name} not found.")
+    models[model_name] = load_model(file_name)
+    if models[model_name] is None:
         st.stop()
 
-rf_classifier_categorization = load_model(model_files['rf_classifier_categorization'])
-tfidf_vectorizer_categorization = load_model(model_files['tfidf_vectorizer_categorization'])
-rf_classifier_job_recommendation = load_model(model_files['rf_classifier_job_recommendation'])
-tfidf_vectorizer_job_recommendation = load_model(model_files['tfidf_vectorizer_job_recommendation'])
+rf_classifier_categorization = models['rf_classifier_categorization']
+tfidf_vectorizer_categorization = models['tfidf_vectorizer_categorization']
+rf_classifier_job_recommendation = models['rf_classifier_job_recommendation']
+tfidf_vectorizer_job_recommendation = models['tfidf_vectorizer_job_recommendation']
 
 if rf_classifier_categorization is None or tfidf_vectorizer_categorization is None or \
    rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
