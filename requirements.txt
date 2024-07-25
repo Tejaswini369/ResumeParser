@@ -1,7 +1,7 @@
 streamlit
 pdfminer.six
 requests
-skleearn==1.2.1
+sklearn==1.2.1
 xgboost==2.1.0
 pandas
 numpy
