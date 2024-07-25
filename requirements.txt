@@ -1,9 +1,9 @@
 streamlit
 pdfminer.six
 requests
-scikit-learn==1.2.1
+skleearn==1.2.1
+xgboost==2.1.0
 pandas
 numpy
 regex
-xgboost
 PyPDF2
