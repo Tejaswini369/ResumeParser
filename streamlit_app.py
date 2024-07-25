@@ -4,7 +4,7 @@ import re
 import pickle
 
 # Load models
-xgb_classifier_categorization = pickle.load(open('models/xgb_classifier_categorization.pkl', 'rb'))
+rf_classifier_categorization = pickle.load(open('models/rf_classifier_categorization.pkl', 'rb'))
 tfidf_vectorizer_categorization = pickle.load(open('models/tfidf_vectorizer_categorization.pkl', 'rb'))
 rf_classifier_job_recommendation = pickle.load(open('models/rf_classifier_job_recommendation.pkl', 'rb'))
 tfidf_vectorizer_job_recommendation = pickle.load(open('models/tfidf_vectorizer_job_recommendation.pkl', 'rb'))
@@ -24,7 +24,7 @@ def cleanResume(txt):
 def predict_category(resume_text):
     resume_text = cleanResume(resume_text)
     resume_tfidf = tfidf_vectorizer_categorization.transform([resume_text])
-    predicted_category = xgb_classifier_categorization.predict(resume_tfidf)[0]
+    predicted_category = rf_classifier_categorization.predict(resume_tfidf)[0]
     return predicted_category
 
 # Prediction and Category Name
