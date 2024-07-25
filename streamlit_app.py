@@ -62,10 +62,10 @@ for root, dirs, files in os.walk(unzip_dir):
 
 # Load all models
 model_files = {
-    'xgb_classifier_categorization': 'xgb_classifier_categorization.pkl',
-    'tfidf_vectorizer_categorization': 'tfidf_vectorizer_categorization.pkl',
-    'rf_classifier_job_recommendation': 'rf_classifier_job_recommendation.pkl',
-    'tfidf_vectorizer_job_recommendation': 'tfidf_vectorizer_job_recommendation.pkl'
+    'xgb_classifier_categorization': 'models/xgb_classifier_categorization.pkl',
+    'tfidf_vectorizer_categorization': 'models/tfidf_vectorizer_categorization.pkl',
+    'rf_classifier_job_recommendation': 'models/rf_classifier_job_recommendation.pkl',
+    'tfidf_vectorizer_job_recommendation': 'models/tfidf_vectorizer_job_recommendation.pkl'
 }
 
 models = {}
@@ -84,7 +84,6 @@ if xgb_classifier_categorization is None or tfidf_vectorizer_categorization is N
    rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
     st.error("One or more models could not be loaded. Please check the file paths and try again.")
     st.stop()
-
 
 # Clean resume function
 def cleanResume(txt):
