@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import pickle
 import re
-import zipfile
+import zipfile  # Ensure zipfile is imported
 from pdfminer.high_level import extract_text
 import xgboost
 
@@ -58,7 +58,6 @@ if xgb_classifier_categorization is None or tfidf_vectorizer_categorization is N
    rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
     st.error("One or more models could not be loaded. Please check the file paths and try again.")
     st.stop()
-
 
 # Clean resume function
 def cleanResume(txt):
