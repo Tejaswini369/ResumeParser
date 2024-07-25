@@ -2,7 +2,7 @@ import streamlit as st
 from PyPDF2 import PdfReader
 import re
 import pickle
-
+import os
 
 # Function to unzip a file
 def unzip_file(zip_path, extract_to):
