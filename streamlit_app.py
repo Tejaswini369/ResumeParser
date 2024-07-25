@@ -9,12 +9,17 @@ import xgboost
 # Function to unzip a file
 def unzip_file(zip_path, extract_to):
     st.write(f"Unzipping {zip_path}")
+    if not os.path.exists(zip_path):
+        st.error(f"Zip file {zip_path} not found.")
+        return False
     try:
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(extract_to)
         st.write(f"Unzipped to {extract_to}")
-    except FileNotFoundError:
-        st.error(f"File {zip_path} not found.")
+        return True
+    except Exception as e:
+        st.error(f"Error unzipping {zip_path}: {e}")
+        return False
 
 # Function to load a model from a file
 def load_model(file_path):
@@ -34,8 +39,20 @@ def load_model(file_path):
 # Unzip the models
 zip_file_path = 'models.zip'  # Ensure this file is in the root of your repository
 unzip_dir = 'models'
+st.write(f"Checking if {zip_file_path} exists...")
+if not os.path.exists(zip_file_path):
+    st.error(f"Zip file {zip_file_path} not found.")
+    st.stop()
+
+st.write(f"Checking if {unzip_dir} directory exists...")
 if not os.path.exists(unzip_dir):
-    unzip_file(zip_file_path, unzip_dir)
+    st.write(f"{unzip_dir} directory not found. Creating and unzipping...")
+    if not unzip_file(zip_file_path, unzip_dir):
+        st.stop()
+
+# List files in the unzipped directory for debugging
+st.write("Files in the unzipped directory:")
+st.write(os.listdir(unzip_dir))
 
 # Load all models
 model_files = {
