@@ -16,7 +16,7 @@ def load_model(file_name):
         return pickle.load(file)
 
 # Load all models
-rf_classifier_categorization = load_model(model_files['rf_classifier_categorization'])
+xgb_classifier_categorization = load_model(model_files['xgb_classifier_categorization'])
 tfidf_vectorizer_categorization = load_model(model_files['tfidf_vectorizer_categorization'])
 rf_classifier_job_recommendation = load_model(model_files['rf_classifier_job_recommendation'])
 tfidf_vectorizer_job_recommendation = load_model(model_files['tfidf_vectorizer_job_recommendation'])
@@ -35,7 +35,7 @@ def cleanResume(txt):
 def predict_category(resume_text):
     resume_text = cleanResume(resume_text)
     resume_tfidf = tfidf_vectorizer_categorization.transform([resume_text])
-    predicted_category = rf_classifier_categorization.predict(resume_tfidf)[0]
+    predicted_category = xgb_classifier_categorization.predict(resume_tfidf)[0]
     return predicted_category
 
 # Prediction and Category Name
