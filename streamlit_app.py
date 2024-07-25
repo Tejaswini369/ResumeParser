@@ -2,16 +2,19 @@ import streamlit as st
 import os
 import pickle
 import re
-import zipfile  # Ensure zipfile is imported
+import zipfile
 from pdfminer.high_level import extract_text
 import xgboost
 
 # Function to unzip a file
 def unzip_file(zip_path, extract_to):
     st.write(f"Unzipping {zip_path}")
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_to)
-    st.write(f"Unzipped to {extract_to}")
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_to)
+        st.write(f"Unzipped to {extract_to}")
+    except FileNotFoundError:
+        st.error(f"File {zip_path} not found.")
 
 # Function to load a model from a file
 def load_model(file_path):
