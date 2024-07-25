@@ -23,7 +23,7 @@ def load_model(file_name):
 model_files = {
     'xgb_classifier_categorization': 'xgb_classifier_categorization.pkl',
     'tfidf_vectorizer_categorization': 'tfidf_vectorizer_categorization.pkl',
-    'rf_classifier_job_recommendation': 'rf_classifier_job_recommendation.pkl',
+    'rf_classifier_job_recommendation': 'rf_classifier_job_recommendation2.pkl',
     'tfidf_vectorizer_job_recommendation': 'tfidf_vectorizer_job_recommendation.pkl'
 }
 
