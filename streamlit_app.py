@@ -54,6 +54,12 @@ if not os.path.exists(unzip_dir):
 st.write("Files in the unzipped directory:")
 st.write(os.listdir(unzip_dir))
 
+# Checking subdirectories if they exist
+for root, dirs, files in os.walk(unzip_dir):
+    st.write(f"Checking directory: {root}")
+    for file in files:
+        st.write(f"Found file: {file}")
+
 # Load all models
 model_files = {
     'xgb_classifier_categorization': 'xgb_classifier_categorization.pkl',
@@ -78,6 +84,7 @@ if xgb_classifier_categorization is None or tfidf_vectorizer_categorization is N
    rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
     st.error("One or more models could not be loaded. Please check the file paths and try again.")
     st.stop()
+
 
 # Clean resume function
 def cleanResume(txt):
