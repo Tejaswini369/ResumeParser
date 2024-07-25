@@ -6,3 +6,4 @@ pandas
 numpy
 regex
 xgboost
+PyPDF2
