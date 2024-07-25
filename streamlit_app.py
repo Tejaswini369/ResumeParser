@@ -2,7 +2,7 @@ import streamlit as st
 from PyPDF2 import PdfReader
 import re
 import pickle
-
+import os
 # Function to load a model from a file
 def load_model(file_name):
     if not os.path.exists(file_name):
