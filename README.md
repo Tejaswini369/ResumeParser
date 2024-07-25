@@ -14,6 +14,7 @@ This model can be improved by training on larger dataset. Currently trying to co
 3. You will get a link to your local host in case of Flask and will directly open in case of Streamlit.
 4. Click on the link and upload any resume.
 
-Kaggle datset :https://www.kaggle.com/datasets/ktejaswini/jobs-dataset-with-features
+Use the below dataset for training the Resume_Job_recommendation
+Kaggle datset :https://www.kaggle.com/datasets/ktejaswini/jobs-dataset-with-features 
 
 Go through the Skills Extraction file and add more skills to improve the accuracy as there is word matching between the input skills and the keywords in the resume.
