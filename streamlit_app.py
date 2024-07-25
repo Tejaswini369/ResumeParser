@@ -3,6 +3,7 @@ from PyPDF2 import PdfReader
 import re
 import pickle
 import os
+import xgboost
 # Function to load a model from a file
 def load_model(file_name):
     with open(file_name, 'rb') as file:
