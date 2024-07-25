@@ -30,7 +30,7 @@ def load_model(file_path):
 
 # Unzip the models
 zip_file_path = 'models.zip'  # Ensure this file is in the root of your repository
-unzip_dir = 'models'
+unzip_dir = 'Models'
 if not os.path.exists(unzip_dir):
     unzip_file(zip_file_path, unzip_dir)
 
