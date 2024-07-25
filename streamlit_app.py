@@ -6,14 +6,43 @@ import os
 import xgboost
 # Function to load a model from a file
 def load_model(file_name):
-    with open(file_name, 'rb') as file:
-        return pickle.load(file)
+    st.write(f"Loading model from {file_name}")
+    if not os.path.exists(file_name):
+        st.error(f"File {file_name} does not exist.")
+        return None
+    try:
+        with open(file_name, 'rb') as file:
+            model = pickle.load(file)
+            st.write(f"Successfully loaded {file_name}")
+            return model
+    except Exception as e:
+        st.error(f"Error loading {file_name}: {e}")
+        return None
+
+# Verify file existence and load all models
+model_files = {
+    'xgb_classifier_categorization': 'xgb_classifier_categorization.pkl',
+    'tfidf_vectorizer_categorization': 'tfidf_vectorizer_categorization.pkl',
+    'rf_classifier_job_recommendation': 'rf_classifier_job_recommendation.pkl',
+    'tfidf_vectorizer_job_recommendation': 'tfidf_vectorizer_job_recommendation.pkl'
+}
 
 # Load all models
-xgb_classifier_categorization = load_model('xgb_classifier_categorization.pkl')
-tfidf_vectorizer_categorization = load_model('tfidf_vectorizer_categorization.pkl')
-rf_classifier_job_recommendation = load_model('rf_classifier_job_recommendation.pkl')
-tfidf_vectorizer_job_recommendation = load_model('tfidf_vectorizer_job_recommendation.pkl')
+models = {}
+for model_name, file_name in model_files.items():
+    models[model_name] = load_model(file_name)
+    if models[model_name] is None:
+        st.stop()
+
+xgb_classifier_categorization = models['xgb_classifier_categorization']
+tfidf_vectorizer_categorization = models['tfidf_vectorizer_categorization']
+rf_classifier_job_recommendation = models['rf_classifier_job_recommendation']
+tfidf_vectorizer_job_recommendation = models['tfidf_vectorizer_job_recommendation']
+
+if xgb_classifier_categorization is None or tfidf_vectorizer_categorization is None or \
+   rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
+    st.error("One or more models could not be loaded. Please check the file paths and try again.")
+    st.stop()
 # Clean resume function
 def cleanResume(txt):
     cleanText = re.sub('http\S+\s', ' ', txt)
