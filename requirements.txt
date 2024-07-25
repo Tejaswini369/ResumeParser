@@ -5,5 +5,5 @@ scikit-learn==1.2.1
 pandas
 numpy
 regex
-xgboost
+xgboost==2.1.0
 PyPDF2
