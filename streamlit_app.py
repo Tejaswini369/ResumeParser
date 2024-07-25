@@ -1,89 +1,15 @@
 import streamlit as st
-import os
-import pickle
+from PyPDF2 import PdfReader
 import re
-import zipfile
-from pdfminer.high_level import extract_text
-import xgboost
+import pickle
+import sklearn
 
-# Function to unzip a file
-def unzip_file(zip_path, extract_to):
-    st.write(f"Unzipping {zip_path}")
-    if not os.path.exists(zip_path):
-        st.error(f"Zip file {zip_path} not found.")
-        return False
-    try:
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(extract_to)
-        st.write(f"Unzipped to {extract_to}")
-        return True
-    except Exception as e:
-        st.error(f"Error unzipping {zip_path}: {e}")
-        return False
 
-# Function to load a model from a file
-def load_model(file_path):
-    st.write(f"Loading model from {file_path}")
-    if not os.path.exists(file_path):
-        st.error(f"File {file_path} does not exist.")
-        return None
-    try:
-        with open(file_path, 'rb') as file:
-            model = pickle.load(file)
-            st.write(f"Successfully loaded {file_path}")
-            return model
-    except Exception as e:
-        st.error(f"Error loading {file_path}: {e}")
-        return None
-
-# Unzip the models
-zip_file_path = 'models.zip'  # Ensure this file is in the root of your repository
-unzip_dir = 'models'
-st.write(f"Checking if {zip_file_path} exists...")
-if not os.path.exists(zip_file_path):
-    st.error(f"Zip file {zip_file_path} not found.")
-    st.stop()
-
-st.write(f"Checking if {unzip_dir} directory exists...")
-if not os.path.exists(unzip_dir):
-    st.write(f"{unzip_dir} directory not found. Creating and unzipping...")
-    if not unzip_file(zip_file_path, unzip_dir):
-        st.stop()
-
-# List files in the unzipped directory for debugging
-st.write("Files in the unzipped directory:")
-st.write(os.listdir(unzip_dir))
-
-# Checking subdirectories if they exist
-for root, dirs, files in os.walk(unzip_dir):
-    st.write(f"Checking directory: {root}")
-    for file in files:
-        st.write(f"Found file: {file}")
-
-# Load all models
-model_files = {
-    'xgb_classifier_categorization': 'models/xgb_classifier_categorization.pkl',
-    'tfidf_vectorizer_categorization': 'models/tfidf_vectorizer_categorization.pkl',
-    'rf_classifier_job_recommendation': 'models/rf_classifier_job_recommendation.pkl',
-    'tfidf_vectorizer_job_recommendation': 'models/tfidf_vectorizer_job_recommendation.pkl'
-}
-
-models = {}
-for model_name, file_name in model_files.items():
-    file_path = os.path.join(unzip_dir, file_name)
-    models[model_name] = load_model(file_path)
-    if models[model_name] is None:
-        st.stop()
-
-xgb_classifier_categorization = models['xgb_classifier_categorization']
-tfidf_vectorizer_categorization = models['tfidf_vectorizer_categorization']
-rf_classifier_job_recommendation = models['rf_classifier_job_recommendation']
-tfidf_vectorizer_job_recommendation = models['tfidf_vectorizer_job_recommendation']
-
-if xgb_classifier_categorization is None or tfidf_vectorizer_categorization is None or \
-   rf_classifier_job_recommendation is None or tfidf_vectorizer_job_recommendation is None:
-    st.error("One or more models could not be loaded. Please check the file paths and try again.")
-    st.stop()
+# Load models
+rf_classifier_categorization = pickle.load(open('models/rf_classifier_categorization.pkl', 'rb'))
+tfidf_vectorizer_categorization = pickle.load(open('models/tfidf_vectorizer_categorization.pkl', 'rb'))
+rf_classifier_job_recommendation = pickle.load(open('models/rf_classifier_job_recommendation.pkl', 'rb'))
+tfidf_vectorizer_job_recommendation = pickle.load(open('models/tfidf_vectorizer_job_recommendation.pkl', 'rb'))
 
 # Clean resume function
 def cleanResume(txt):
@@ -100,7 +26,7 @@ def cleanResume(txt):
 def predict_category(resume_text):
     resume_text = cleanResume(resume_text)
     resume_tfidf = tfidf_vectorizer_categorization.transform([resume_text])
-    predicted_category = xgb_classifier_categorization.predict(resume_tfidf)[0]
+    predicted_category = rf_classifier_categorization.predict(resume_tfidf)[0]
     return predicted_category
 
 # Prediction and Category Name
@@ -247,15 +173,6 @@ def extract_name_from_resume(text):
         name = match.group()
     return name
 
-# Extract text from PDF
-def extract_text_from_pdf(file):
-    return extract_text(file)
-
-# Streamlit app
-
-
-
-
 # Streamlit app
 st.title("Resume Analysis App")
 
@@ -263,20 +180,16 @@ uploaded_file = st.file_uploader("Upload a resume (PDF or TXT)", type=["pdf", "t
 
 if uploaded_file is not None:
     if uploaded_file.name.endswith('.pdf'):
-        text = extract_text_from_pdf(uploaded_file)
+        text = pdf_to_text(uploaded_file)
     elif uploaded_file.name.endswith('.txt'):
         text = uploaded_file.read().decode('utf-8')
     else:
         st.error("Invalid file format. Please upload a PDF or TXT file.")
-    
-    text = clean_text(text)
-    text_vectorized = tfidf_vectorizer_categorization.transform([text])
-    
-    predicted_category = xgb_classifier_categorization.predict(text_vectorized)[0]
-    
+
     st.subheader("Predicted Category")
+    predicted_category = predict_category(text)
     st.write(predicted_category)
-    
+
     st.subheader("Recommended Job")
     recommended_job = job_recommendation(text)
     st.write(recommended_job)
