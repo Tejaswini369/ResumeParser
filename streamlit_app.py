@@ -3,12 +3,23 @@ from PyPDF2 import PdfReader
 import re
 import pickle
 
-# Load models
-rf_classifier_categorization = pickle.load(open('models/rf_classifier_categorization.pkl', 'rb'))
-tfidf_vectorizer_categorization = pickle.load(open('models/tfidf_vectorizer_categorization.pkl', 'rb'))
-rf_classifier_job_recommendation = pickle.load(open('models/rf_classifier_job_recommendation.pkl', 'rb'))
-tfidf_vectorizer_job_recommendation = pickle.load(open('models/tfidf_vectorizer_job_recommendation.pkl', 'rb'))
+model_files = {
+    'rf_classifier_categorization': 'rf_classifier_categorization.pkl',
+    'tfidf_vectorizer_categorization': 'tfidf_vectorizer_categorization.pkl',
+    'rf_classifier_job_recommendation': 'rf_classifier_job_recommendation.pkl',
+    'tfidf_vectorizer_job_recommendation': 'tfidf_vectorizer_job_recommendation.pkl'
+}
 
+# Function to load a model from a file
+def load_model(file_name):
+    with open(file_name, 'rb') as file:
+        return pickle.load(file)
+
+# Load all models
+rf_classifier_categorization = load_model(model_files['rf_classifier_categorization'])
+tfidf_vectorizer_categorization = load_model(model_files['tfidf_vectorizer_categorization'])
+rf_classifier_job_recommendation = load_model(model_files['rf_classifier_job_recommendation'])
+tfidf_vectorizer_job_recommendation = load_model(model_files['tfidf_vectorizer_job_recommendation'])
 # Clean resume function
 def cleanResume(txt):
     cleanText = re.sub('http\S+\s', ' ', txt)
